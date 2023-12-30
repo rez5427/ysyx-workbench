@@ -13,6 +13,7 @@ object Control {
     val Ext_immS = 3.U(3.W)
     val Ext_immB = 4.U(3.W)
     val Ext_immJ = 5.U(3.W)
+    val Ext_immZ = 5.U(3.W)
 
     // RegWr
     val RegWr_N = 0.U(1.W)
