@@ -13,7 +13,7 @@ trait ImmGen extends Module {
   val io: ImmGenIO
 }
 
-class ImmGen(val xlen: Int) extends ImmGen {
+class ImmGenWire(val xlen: Int) extends ImmGen {
   val io   = IO(new ImmGenIO(xlen))
   val Iimm = io.inst(31, 20).asSInt
   val Simm = Cat(io.inst(31, 25), io.inst(11, 7)).asSInt

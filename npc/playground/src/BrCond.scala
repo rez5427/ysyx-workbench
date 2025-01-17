@@ -13,7 +13,7 @@ trait BrCond extends Module {
   val io: BrCondIO
 }
 
-class BrCond(val xlen: Int) extends BrCond {
+class BrCondSimple(val xlen: Int) extends BrCond {
   val io         = IO(new BrCondIO(xlen))
   val diff       = io.rs1 - io.rs2
   val neq        = diff.orR

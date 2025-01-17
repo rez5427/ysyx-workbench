@@ -31,7 +31,7 @@ trait Alu extends Module {
   val io: AluIO
 }
 
-class Alu(val width: Int) extends Alu {
+class AluSimple(val width: Int) extends Alu {
   val io = IO(new AluIO(width))
 
   val shamt = io.B(4, 0).asUInt

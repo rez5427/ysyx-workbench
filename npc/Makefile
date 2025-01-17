@@ -17,7 +17,7 @@ verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(BUILD_DIR)
 	mill -i __.test.runMain Elaborate -td $(BUILD_DIR) 
-	sed -i -e 's/_\(aw\|ar\|w\|r\|b\)_\(\|bits_\)/_\1/g' $(BUILD_DIR)/Tile.v
+	sed -i -e 's/_\(aw\|ar\|w\|r\|b\)_\(\|bits_\)/_\1/g' $(BUILD_DIR)/*
 
 CXXFLAGS += -std=c++11 -Wall -Wno-unused-variable
 LDFLAGS += -lreadline -ldl -pie
@@ -27,7 +27,7 @@ VERILATOR_FLAGS = --assert -Wno-STMTDLY -O3 --trace --threads $(nproc)\
 	--top-module ysyxSoCFull -Mdir $(gen_dir)/VysyxSoCFull.csrc \
 	-CFLAGS "$(CXXFLAGS) -include $(gen_dir)/VysyxSoCFull.csrc/VysyxSoCFull.h" \
 	-LDFLAGS "$(LDFLAGS)" \
-	-I$(gen_dir) ./Tile.v \
+	-F $(gen_dir)/filelist.f \
 	-I$(ysyxSoc_dir)/perip/uart16550/rtl \
 	-I$(ysyxSoc_dir)/perip/spi/rtl ./spi_top_apb.v \
 	-I$(ysyxSoc_dir)/perip/sdram \
@@ -49,9 +49,17 @@ $(base_dir)/VysyxSoCFull: $(ysyxSoc_dir)/build/ysyxSoCFull.v $(src_dir)/cc/top.c
 verilator: $(base_dir)/VysyxSoCFull
 
 run:
-	./VysyxSoCFull $(NEMU_HOME)/../am-kernels/tests/cpu-tests/build/add-longlong-riscv32e-npc.bin
+	./VysyxSoCFull /home/rez/workbench/ics2023/am-kernels/tests/cpu-tests/build/add-longlong-riscv32e-nemu.bin
 	gtkwave $(waveform_file) $(config_file)
 
+simple:
+	make clean
+	make verilog
+	make verilator
+	make run > temp
+
+debug:
+	gtkwave dump.gtkw
 
 help:
 	mill -i __.test.runMain Elaborate --help
@@ -75,7 +83,7 @@ clean:
 	-rm -rf VysyxSoCFull
 	-rm -rf dump.vcd
 
-.PHONY: test verilog help compile bsp reformat checkformat clean
+.PHONY: test verilog help compile bsp reformat checkformat clean simple debug
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!

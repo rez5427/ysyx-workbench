@@ -21,12 +21,6 @@ bool is_batch_mode = false;
 
 void *handle;
 
-typedef void (*difftest_exec_t)(uint64_t n);
-
-
-
-difftest_exec_t difftest_exec;
-
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -46,7 +40,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-  difftest_exec(-1);
+  //difftest_exec(-1);
   return 0;
 }
 
@@ -59,14 +53,14 @@ static int cmd_si(char *args) {
   //printf("%s\n", args);
   if(args==NULL)
   {
-    difftest_exec(1);
+    //difftest_exec(1);
     return 0;
   }
   char *arg = strtok(NULL, " ");
   int n = atoi(arg);
   int i = 0;
   for(;i<n;i++){
-    difftest_exec(1);
+    //difftest_exec(1);
   }
   return 0;
 }
@@ -170,12 +164,8 @@ void init_sdb() {
         printf("dlopen error\n");
 
     typedef void (*difftest_init_t)(int port);
-
     
-
     difftest_init_t difftest_init = (difftest_init_t) dlsym(handle, "difftest_init");
-
-    difftest_exec = (difftest_exec_t) dlsym(handle, "difftest_exec");
 
     difftest_init(0);
 }

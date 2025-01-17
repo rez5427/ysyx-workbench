@@ -4,9 +4,9 @@ import AXI._
 
 case class CoreConfig(
   xlen:       Int,
-  makeAlu:    Int => Alu    = new Alu(_),
-  makeBrCond: Int => BrCond = new BrCond(_),
-  makeImmGen: Int => ImmGen = new ImmGen(_))
+  makeAlu:    Int => Alu    = new AluSimple(_),
+  makeBrCond: Int => BrCond = new BrCondSimple(_),
+  makeImmGen: Int => ImmGen = new ImmGenWire(_))
 
 class CoreIO(xlen: Int, axiParams: AxiBundleParameters) extends Bundle {
   val icache = Flipped(new ICacheIO(xlen, xlen))
@@ -16,12 +16,8 @@ class CoreIO(xlen: Int, axiParams: AxiBundleParameters) extends Bundle {
 class Core(val coreConf: CoreConfig, val axiParams: AxiBundleParameters) extends Module {
   val io    = IO(new CoreIO(coreConf.xlen, axiParams))
   val dpath = Module(new DataPath(coreConf))
-  val ctrl  = Module(new Control)
 
   dpath.io.dcache := DontCare
 
   dpath.io.icache <> io.icache
-
-  dpath.io.ctrl <> ctrl.io
-
 }

@@ -6,5 +6,8 @@ object Elaborate extends App {
 
   def top       = new Tile(config.core, config.axi, config.cache)
   val generator = Seq(chisel3.stage.ChiselGeneratorAnnotation(() => top))
-  (new ChiselStage).execute(args, generator :+ CIRCTTargetAnnotation(CIRCTTarget.Verilog))
+
+  val splitVerilogArgs = args ++ Array("--split-verilog")
+
+  (new ChiselStage).execute(splitVerilogArgs, generator :+ CIRCTTargetAnnotation(CIRCTTarget.Verilog))
 }
